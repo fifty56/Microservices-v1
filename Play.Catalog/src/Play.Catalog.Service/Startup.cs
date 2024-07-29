@@ -15,6 +15,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Play.Catalog.Service.Entities;
+using Play.Common.MassTransit;
 using Play.Common.MongoDB;
 using Play.Common.Settings;
 
@@ -37,7 +38,9 @@ namespace Play.Catalog.Service
         {
             serviceSettings = Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 
-            services.AddMongo().AddMongoRepository<Item>("Items");
+            services.AddMongo()
+                .AddMongoRepository<Item>("Items")
+                .AddMassTransitWithRabbitMq();
 
             services.AddControllers(options => {
                 options.SuppressAsyncSuffixInActionNames = false;                
