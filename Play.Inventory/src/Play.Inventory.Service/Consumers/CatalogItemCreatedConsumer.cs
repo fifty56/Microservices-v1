@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using MassTransit;
 using Play.Catalog.Contracts;
@@ -32,6 +33,8 @@ namespace Play.Inventory.Service.Consumers
                 Name = message.Name,
                 Description = message.Description
             };
+
+throw new ArgumentException("ehune");
 
             await repository.CreateAsync(item);
         }

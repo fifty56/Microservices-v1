@@ -15,15 +15,14 @@ namespace Play.Inventory.Service.Controllers
     public class ItemsController : ControllerBase
     {
         private readonly IRepository<InventoryItem> inventoryItemsRepository;
-        //private readonly IRepository<CatalogItem> catalogItemsRepository;
+        private readonly IRepository<CatalogItem> catalogItemsRepository;
 
-        private readonly CatalogClient catalogClient;
+        //private readonly CatalogClient catalogClient;
 
-        public ItemsController(IRepository<InventoryItem> inventoryItemsRepository, CatalogClient catalogClient)
+        public ItemsController(IRepository<InventoryItem> inventoryItemsRepository, IRepository<CatalogItem> catalogItemsRepository)
         {
             this.inventoryItemsRepository = inventoryItemsRepository;
-            this.catalogClient = catalogClient;
-            //this.catalogItemsRepository = catalogItemsRepository;
+            this.catalogItemsRepository = catalogItemsRepository;            
         }
 
         [HttpGet]
@@ -35,12 +34,9 @@ namespace Play.Inventory.Service.Controllers
             }
 
             
-            var inventoryItemEntities = await inventoryItemsRepository.GetAllAsync(item => item.UserId == userId);
-            var catalogItemEntities = await catalogClient.GetCatalogItemsAsync();
-            
-
-            // var itemIds = inventoryItemEntities.Select(item => item.CatalogItemId);
-            // var catalogItemEntities = await catalogItemsRepository.GetAllAsync(item => itemIds.Contains(item.Id));
+            var inventoryItemEntities = await inventoryItemsRepository.GetAllAsync(item => item.UserId == userId);            
+            var itemIds = inventoryItemEntities.Select(item => item.CatalogItemId);
+            var catalogItemEntities = await catalogItemsRepository.GetAllAsync(item => itemIds.Contains(item.Id));
 
             var inventoryItemDtos = inventoryItemEntities.Select(inventoryItem =>
             {
